@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی جمع‌آوری الماس</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #ffcc00, #ff6699);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        .score-board {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .gem {
+            font-size: 100px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .gem:hover {
+            transform: scale(1.1);
+        }
+        .status {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 400px;
+        }
+        .friend-list {
+            margin-top: 20px;
+            color: #fff;
+        }
+        .progress {
+            width: 100%;
+            height: 20px;
+            background: #ddd;
+            margin: 20px 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: gold;
+            transition: width 0.3s;
+        }
+        input, button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="score-board">
+        امتیاز: <span id="score">0</span> | انرژی: <span id="energy">500</span>
+    </div>
+    <div class="gem" id="gem">💎</div>
+    <div class="status">
+        <button id="frens">دوستان</button>
+        <button id="earn">کسب درآمد</button>
+        <button id="boost">تقویت</button>
+    </div>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar" style="width: 0;"></div>
+    </div>
+
+    <div class="friend-list" id="friendList"></div>
+    <input type="text" id="friendName" placeholder="نام دوست جدید">
+    <button id="addFriend">افزودن دوست</button>
+
+    <script>
+        let score = 0;
+        let energy = 500;
+        const friends = [];
+
+        document.getElementById('gem').addEventListener('click', () => {
+            score += 35; // امتیاز جمع‌آوری شده
+            energy -= 10; // انرژی مصرف شده
+            updateScore();
+            updateProgress();
+        });
+
+        function updateScore() {
+            document.getElementById('score').innerText = score;
+            document.getElementById('energy').innerText = energy;
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressPercentage = Math.min((score / 1000) * 100, 100); // فرض کنید 1000 امتیاز هدف است
+            progressBar.style.width = progressPercentage + '%';
+        }
+
+        document.getElementById('frens').addEventListener('click', () => {
+            alert('دوستان:\n' + (friends.length > 0 ? friends.join('\n') : 'دوستی وجود ندارد.'));
+        });
+
+        document.getElementById('earn').addEventListener('click', () => {
+            score += 50; // امتیاز کسب شده
+            updateScore();
+            alert('50 امتیاز به دست آوردید!');
+        });
+
+        document.getElementById('boost').addEventListener('click', () => {
+            if (energy >= 50) {
+                score += 100; // افزایش امتیاز
+                energy -= 50; // کاهش انرژی
+                updateScore();
+                alert('تقویت فعال شد! 100 امتیاز به دست آوردید.');
+            } else {
+                alert('انرژی کافی برای تقویت ندارید!');
+            }
+        });
+
+        document.getElementById('addFriend').addEventListener('click', () => {
+            const friendName = document.getElementById('friendName').value;
+            if (friendName) {
+                friends.push(friendName);
+                document.getElementById('friendName').value = ''; // پاک کردن ورودی
+                updateFriendList();
+                alert(`${friendName} به لیست دوستان اضافه شد!`);
+            } else {
+                alert('لطفاً نام دوست را وارد کنید.');
+            }
+        });
+
+        function updateFriendList() {
+            const friendListDiv = document.getElementById('friendList');
+            friendListDiv.innerHTML = '<h3>لیست دوستان:</h3>' + friends.map(friend => `<p>${friend}</p>`).join('');
+        }
+    </script>
+</body>
+</html>
